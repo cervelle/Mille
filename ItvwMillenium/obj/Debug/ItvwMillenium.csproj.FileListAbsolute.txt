@@ -1,0 +1,6 @@
+c:\users\cervelle\documents\visual studio 2013\Projects\ItvwMillenium\ItvwMillenium\bin\Debug\ItvwMillenium.exe.config
+c:\users\cervelle\documents\visual studio 2013\Projects\ItvwMillenium\ItvwMillenium\bin\Debug\ItvwMillenium.exe
+c:\users\cervelle\documents\visual studio 2013\Projects\ItvwMillenium\ItvwMillenium\bin\Debug\ItvwMillenium.pdb
+c:\users\cervelle\documents\visual studio 2013\Projects\ItvwMillenium\ItvwMillenium\obj\Debug\ItvwMillenium.csprojResolveAssemblyReference.cache
+c:\users\cervelle\documents\visual studio 2013\Projects\ItvwMillenium\ItvwMillenium\obj\Debug\ItvwMillenium.exe
+c:\users\cervelle\documents\visual studio 2013\Projects\ItvwMillenium\ItvwMillenium\obj\Debug\ItvwMillenium.pdb
