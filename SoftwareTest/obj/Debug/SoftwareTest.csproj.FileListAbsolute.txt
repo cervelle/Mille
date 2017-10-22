@@ -1,0 +1,6 @@
+C:\Users\Cervelle\Documents\Visual Studio 2013\Projects\ItvwMillenium\SoftwareTest\bin\Debug\SoftwareTest.exe.config
+C:\Users\Cervelle\Documents\Visual Studio 2013\Projects\ItvwMillenium\SoftwareTest\obj\Debug\SoftwareTest.csprojResolveAssemblyReference.cache
+C:\Users\Cervelle\Documents\Visual Studio 2013\Projects\ItvwMillenium\SoftwareTest\bin\Debug\SoftwareTest.exe
+C:\Users\Cervelle\Documents\Visual Studio 2013\Projects\ItvwMillenium\SoftwareTest\bin\Debug\SoftwareTest.pdb
+C:\Users\Cervelle\Documents\Visual Studio 2013\Projects\ItvwMillenium\SoftwareTest\obj\Debug\SoftwareTest.exe
+C:\Users\Cervelle\Documents\Visual Studio 2013\Projects\ItvwMillenium\SoftwareTest\obj\Debug\SoftwareTest.pdb
