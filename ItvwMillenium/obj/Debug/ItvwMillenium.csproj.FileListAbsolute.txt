@@ -4,3 +4,5 @@ c:\users\cervelle\documents\visual studio 2013\Projects\ItvwMillenium\ItvwMillen
 c:\users\cervelle\documents\visual studio 2013\Projects\ItvwMillenium\ItvwMillenium\obj\Debug\ItvwMillenium.csprojResolveAssemblyReference.cache
 c:\users\cervelle\documents\visual studio 2013\Projects\ItvwMillenium\ItvwMillenium\obj\Debug\ItvwMillenium.exe
 c:\users\cervelle\documents\visual studio 2013\Projects\ItvwMillenium\ItvwMillenium\obj\Debug\ItvwMillenium.pdb
+C:\Users\Cervelle\Documents\Visual Studio 2013\Projects\ItvwMillenium\ItvwMillenium\bin\Debug\nunit.framework.dll
+C:\Users\Cervelle\Documents\Visual Studio 2013\Projects\ItvwMillenium\ItvwMillenium\bin\Debug\nunit.framework.xml
