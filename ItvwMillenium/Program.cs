@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ItvwMilleniumx
+namespace ItvwMillenium
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main()
         {
-            var filePath = @"test_data.csv";
-            var Positions = new List<Position>();
-            var NetPositions = new HashSet<Position>();
+           
+        }
+
+        public static void NetPositionsCalculator(string filePath)
+        {
+            var NetPositions = new SortedList();
 
             using (var sr = new StreamReader(filePath))
             {
@@ -21,31 +25,30 @@ namespace ItvwMilleniumx
                 string line;
                 while ((line = sr.ReadLine()) != null)
                 {
-
-                    string[] fields = line.Split(',');
-                    Positions.Add(new Position(fields));
-                    NetPosition(NetPositions, fields);
-
+                    var position = new Position(line);
+                    NetPosition(NetPositions, position);
                 }
+            }
+
+            using (var sw = new StreamWriter("Result.csv"))
+            {
+                sw.WriteLine("TRADER,SYMBOL,QUANTITY");
+                
+                foreach(Position p in NetPositions.Values)
+                    sw.WriteLine("{0},{1},{2}",p.Trader,p.Symbol,p.Quantity);
             }
         }
 
-        public static void NetPosition(HashSet<Position> NetPositions, string[] fields)
+        public static void NetPosition(SortedList NetPositions, Position p)
         {
-            foreach (Position p in NetPositions)
+            if (NetPositions.Contains(p.Hash()))
             {
-                if ((fields[0] == p.Trader) && (fields[2] == p.Symbol))
-                {
-                    p.Quantity += int.Parse(fields[3]);
-                    return;
-                }
+                var item = NetPositions[p.Hash()] as Position;
+                item.Quantity += p.Quantity;
+                return;
             }
-            NetPositions.Add(new Position()
-            {
-                Trader = fields[0],
-                Symbol = fields[2],
-                Quantity = int.Parse(fields[3])
-            });
+
+            NetPositions.Add(p.Hash(), p);
         }
     }
 
@@ -59,18 +62,9 @@ namespace ItvwMilleniumx
 
         public Position() {}
 
-        //public Position(string line)
-        //{
-        //    string[] fields = line.Split(',');
-        //    Trader = fields[0];
-        //    Broker = fields[1];
-        //    Symbol = fields[2];
-        //    Quantity = int.Parse(fields[3]);
-        //    Price = int.Parse(fields[4]);
-        //}
-
-        public Position(string[] fields)
+        public Position(string line)
         {
+            string[] fields = line.Split(',');
             Trader = fields[0];
             Broker = fields[1];
             Symbol = fields[2];
@@ -78,54 +72,71 @@ namespace ItvwMilleniumx
             Price = int.Parse(fields[4]);
         }
 
-        public override bool Equals(object obj)
+        public override string ToString()
         {
-            var other = obj as Position;
-            if (other == null)
-            {
-                return false;
-            }
-            return Trader == other.Trader && Symbol == other.Symbol;
+            return string.Format("{0},{1},{2}", Trader, Symbol, Quantity);
         }
 
-        public override int GetHashCode()
+        public string Hash()
         {
-            return base.GetHashCode();
+            return string.Format("{0}{1}", Trader, Symbol);
         }
     }
 
     [TestClass]
     public class UnitTest
     {
+
+        [TestMethod]
+        public void TestNetPositionsCalculator()
+        {
+            var input = @"test_data.csv";
+            var output = @"result.csv";
+            var expectedOutput = @"net_positions_expected.csv";
+            
+            Program.NetPositionsCalculator(input);
+            
+            using (var o = new StreamReader(output))
+            using (var eo = new StreamReader(expectedOutput))
+            {
+                string outputLine;
+                string expectedOutputLine;
+                while ((outputLine = o.ReadLine()) != null)
+                {
+                    expectedOutputLine = eo.ReadLine();
+                    Assert.AreEqual(expectedOutputLine, outputLine); 
+                }       
+            }
+        }
+
         [TestMethod]
         public void TestNetPosition()
         {
-            
-            var NetPositions = new HashSet<Position>();
+            var NetPositions = new SortedList();
 
-            var value1 = new string[] { "BuzzAldrin", "DB", "MOON.N", "100", "69" };
-            Program.NetPosition(NetPositions, value1);
-            Assert.AreEqual(1, NetPositions.Count());
+            var p1 = new Position("BuzzAldrin,DB,MOON.N,100,69");
+            Program.NetPosition(NetPositions, p1);
+            Assert.AreEqual(1, NetPositions.Count);
             BrowseAndTestList(NetPositions, "BuzzAldrin", "MOON.N", 100);
 
-            var value2 = new string[] { "BuzzAldrin", "DB", "MOON.N", "100", "69" };
-            Program.NetPosition(NetPositions, value2);
-            Assert.AreEqual(1, NetPositions.Count());
+            var p2 = new Position("BuzzAldrin,DB,MOON.N,100,69");
+            Program.NetPosition(NetPositions, p2);
+            Assert.AreEqual(1, NetPositions.Count);
             BrowseAndTestList(NetPositions, "BuzzAldrin", "MOON.N", 200);
 
-            
-            var value3 = new string[] { "Steevy", "DB", "AAPL.N", "666", "85" };
-            Program.NetPosition(NetPositions, value3);
-            Assert.AreEqual(2, NetPositions.Count());
+
+            var p3 = new Position("Steevy,DB,AAPL.N,666,85");
+            Program.NetPosition(NetPositions, p3);
+            Assert.AreEqual(2, NetPositions.Count);
             BrowseAndTestList(NetPositions, "Steevy", "AAPL.N", 666);
 
         }
 
-        void BrowseAndTestList(HashSet<Position> NetPositions, string TargetTrader, string TargetSymbol, int TargetQuantity)
+        void BrowseAndTestList(SortedList NetPositions, string TargetTrader, string TargetSymbol, int TargetQuantity)
         {
-            foreach (var p in NetPositions)
-                if (p.Trader == TargetTrader && p.Symbol == TargetSymbol)
-                    Assert.AreEqual(TargetQuantity, p.Quantity);
+            var hash = string.Format("{0}{1}", TargetTrader, TargetSymbol);
+            var p = NetPositions[hash] as Position;
+            Assert.AreEqual(TargetQuantity, p.Quantity);
         }
         
     }
