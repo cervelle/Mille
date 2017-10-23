@@ -38,7 +38,7 @@ namespace SoftwareTest
         {
             public int FindMax(int[] numbers)
             {
-                return numbers.OrderByDescending(x => x).First();
+                return numbers.Max();
             }
 
             public int[] FindMax(int[] numbers, int n)
@@ -64,12 +64,12 @@ namespace SoftwareTest
                 // *****(see below)*****
 
                 return sorted.First() == 3
-                       && sorted.Last() == 9
-                       && FindMax(numbers) == 9
+                       && sorted.Last() == FindMax(numbers) //challenge each other
+                       && sorted.Length == numbers.Length //belt and braces
+                       && FindMax(numbers) == 9 //now useless
                        && maxes[0] == 9
                        && maxes[1] == 7
-                       && maxes.Length == 2 //check the length of maxes (to be honest i did the error :D)
-                       && sorted.Length == numbers.Length; //belt and braces
+                       && maxes.Length == 2; //check the length of maxes (to be honest i have done the error :D)
             }
         }
 
@@ -95,9 +95,31 @@ namespace SoftwareTest
         {
             public byte[] Encode(byte[] original)
             {
-                // TODO: Write your encoder here
+                var list = new Queue<byte>();
+                var bufferChar = original[0];
+                var counter = 0;
+                foreach (var c in original)
+                {
+                    if (c == bufferChar)
+                        ++counter;
+                    else
+                    {
+                        list.Enqueue(Convert.ToByte(counter));
+                        list.Enqueue(bufferChar);
+                        bufferChar = c;
+                        counter = 1;
+                    }
+                }
+                list.Enqueue(Convert.ToByte(counter));
+                list.Enqueue(bufferChar);
 
-                return new byte[0];
+                var final = new byte[list.Count];
+                for (int i = 0; i < final.Length; i++)
+                {
+                    final[i] = list.Dequeue();
+                }
+
+                return final;
             }
 
             public bool Winner()
@@ -111,10 +133,15 @@ namespace SoftwareTest
                     new Tuple<byte[], byte[]>(new byte[]{0x01, 0x02, 0x03, 0x04}, new byte[]{0x01, 0x01, 0x01, 0x02, 0x01, 0x03, 0x01, 0x04}),
                     new Tuple<byte[], byte[]>(new byte[]{0x01, 0x01, 0x01, 0x01}, new byte[]{0x04, 0x01}),
                     new Tuple<byte[], byte[]>(new byte[]{0x01, 0x01, 0x02, 0x02}, new byte[]{0x02, 0x01, 0x02, 0x02})
+                    //several tests with sequence of character like a or aaaaaaabbbbbbbccccc or abbbbbbbbbbbbbbbbbbbbbc or aaaaaaaaaaabccccccccbddddddddd
+                    //mutiple repeated character throughout the output, in the beginning/middle/end and isolated character in the middle of the input
+                    //I guess another good test could be to add space or ponctuation in a test
                 };
 
                 // TODO: What limitations does your algorithm have (if any)?
+                //My algorithm is limit by the size of the array (could be type "long")
                 // TODO: What do you think about the efficiency of this algorithm for encoding data?
+                //Depending of the datas, the algorithm is not very efficient. For instance encoding this sentence is not very efficient as the output will be larger than the input.
 
                 foreach (var testCase in testCases)
                 {

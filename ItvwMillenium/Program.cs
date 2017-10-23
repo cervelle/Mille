@@ -62,21 +62,21 @@ namespace ItvwMillenium
         public static void NetPositionsCalculator(SortedList NetPositions, Position p)
         {
             p.Net = true;
-            if (NetPositions.Contains(p.Hash()))
+            if (NetPositions.Contains(p.Key()))
             {
-                var item = NetPositions[p.Hash()] as Position;
+                var item = NetPositions[p.Key()] as Position;
                 item.Quantity += p.Quantity;
                 return;
             }
 
-            NetPositions.Add(p.Hash(), p);
+            NetPositions.Add(p.Key(), p);
         }
 
         public static void BoxedPositionsCalculator(SortedList BoxedPositions, Position p)
         {
-            if (BoxedPositions.Contains(p.Hash()))
+            if (BoxedPositions.Contains(p.Key()))
             {
-                var item = BoxedPositions[p.Hash()] as Position;
+                var item = BoxedPositions[p.Key()] as Position;
                 if (!item.Boxed)
                 {
                     if ((item.Quantity>0 && p.Quantity<0) || (item.Quantity<0 && p.Quantity>0))
@@ -88,7 +88,7 @@ namespace ItvwMillenium
                 return;
             }
 
-            BoxedPositions.Add(p.Hash(), p);
+            BoxedPositions.Add(p.Key(), p);
             
         }
     }
@@ -122,7 +122,7 @@ namespace ItvwMillenium
             return string.Format("{0},{1},{2}", Trader, Symbol, Quantity);
         }
 
-        public string Hash()
+        public string Key()
         {
             return string.Format("{0}{1}", Trader, Symbol);
         }
@@ -224,15 +224,15 @@ namespace ItvwMillenium
 
         void BrowseAndTestList(SortedList positions, string targetTrader, string targetSymbol, int targetQuantity)
         {
-            var hash = string.Format("{0}{1}", targetTrader, targetSymbol);
-            var p = positions[hash] as Position;
+            var Key = string.Format("{0}{1}", targetTrader, targetSymbol);
+            var p = positions[Key] as Position;
             Assert.AreEqual(targetQuantity, p.Quantity);
         }
 
         void TestBoxedPosition(SortedList positions, string targetTrader, string targetSymbol, bool targetBoxed)
         {
-            var hash = string.Format("{0}{1}", targetTrader, targetSymbol);
-            var p = positions[hash] as Position;
+            var Key = string.Format("{0}{1}", targetTrader, targetSymbol);
+            var p = positions[Key] as Position;
             Assert.AreEqual(targetBoxed, p.Boxed);
         }
         
